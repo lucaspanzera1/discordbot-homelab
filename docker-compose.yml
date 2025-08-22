@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   discord-bot:
     build: .
@@ -6,8 +8,10 @@ services:
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    user: "1000:0"
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    # Usar o grupo docker do host (verificado com: getent group docker | cut -d: -f3)
+    group_add:
+      - "1001"  # GID do grupo docker no host
     networks:
       - homelab
 
