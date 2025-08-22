@@ -50,7 +50,7 @@ jobs:
         run: |
           ssh homelab << 'EOF'
             # Navegar para o diretório do projeto
-            cd ~/Github/discordbot-homelab  # Ajuste o caminho conforme necessário
+            cd ~/Github/discord-bot  # Ajuste o caminho conforme necessário
             
             # Fazer pull das últimas mudanças
             echo "🔄 Pulling latest changes..."
@@ -58,11 +58,11 @@ jobs:
             
             # Parar o container existente
             echo "🛑 Stopping existing container..."
-            docker-compose down discordbot-homelab || echo "Container não estava rodando"
+            docker-compose down || echo "Container não estava rodando"
             
             # Rebuild e restart do container
             echo "🔨 Building and starting container..."
-            docker-compose up -d --build discordbot-homelab
+            docker-compose up -d --build
             
             # Aguardar um pouco para o container inicializar
             echo "⏳ Waiting for container to start..."
@@ -70,18 +70,18 @@ jobs:
             
             # Verificar se o container está rodando
             echo "🔍 Checking container status..."
-            if docker ps | grep -q "discordbot-homelab"; then
+            if docker ps | grep -q "homelab-discord-bot"; then
               echo "✅ Discord Bot deploy successful!"
               echo "📊 Container status:"
-              docker ps --filter "name=discordbot-homelab" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+              docker ps --filter "name=homelab-discord-bot" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
               
               # Mostrar logs recentes para verificar se está funcionando
               echo "📋 Recent logs:"
-              docker logs discordbot-homelab --tail 10
+              docker logs homelab-discord-bot --tail 10
             else
               echo "❌ Container failed to start"
               echo "🔍 Checking logs for errors:"
-              docker logs discordbot-homelab --tail 20
+              docker logs homelab-discord-bot --tail 20
               exit 1
             fi
           EOF

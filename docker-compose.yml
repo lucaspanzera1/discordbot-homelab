@@ -1,17 +1,14 @@
-version: '3.8'
-
 services:
   discord-bot:
     build: .
-    container_name: discordbot-homelab
+    container_name: homelab-discord-bot
     restart: unless-stopped
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
-    # Usar o grupo docker do host (verificado com: getent group docker | cut -d: -f3)
     group_add:
-      - "1001"  # GID do grupo docker no host
+      - "1001"
     networks:
       - homelab
 
