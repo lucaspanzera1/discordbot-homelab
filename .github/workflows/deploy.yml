@@ -50,7 +50,7 @@ jobs:
         run: |
           ssh homelab << 'EOF'
             # Navegar para o diretório do projeto
-            cd ~/Github/discord-bot  # Ajuste o caminho conforme necessário
+            cd ~/Github/discordbot-homelab  # Ajuste o caminho conforme necessário
             
             # Fazer pull das últimas mudanças
             echo "🔄 Pulling latest changes..."
