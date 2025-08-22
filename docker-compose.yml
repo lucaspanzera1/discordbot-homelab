@@ -3,7 +3,7 @@ version: '3.8'
 services:
   discord-bot:
     build: .
-    container_name: homelab-discord-bot
+    container_name: discordbot-homelab
     restart: unless-stopped
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
