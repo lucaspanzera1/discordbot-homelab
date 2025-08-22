@@ -130,17 +130,17 @@ def format_container_status(containers, filter_status=None):
     result = []
     
     if running:
-        result.append("🟢 **CONTAINERS RODANDO:**")
+        result.append("🟢🟢 **CONTAINERS RODANDO:**")
         for container in running:
             result.append(f"  • `{container['name']}` - {container['image']}")
     
     if stopped:
-        result.append("\n🔴 **CONTAINERS PARADOS:**")
+        result.append("\n🔴🔴 **CONTAINERS PARADOS:**")
         for container in stopped:
             result.append(f"  • `{container['name']}` - {container['image']}")
     
     if others:
-        result.append("\n🟡 **OUTROS STATUS:**")
+        result.append("\n🟡🟡 **OUTROS STATUS:**")
         for container in others:
             result.append(f"  • `{container['name']}` - {container['status']}")
     
