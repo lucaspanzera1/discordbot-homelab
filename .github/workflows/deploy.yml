@@ -70,18 +70,18 @@ jobs:
             
             # Verificar se o container está rodando
             echo "🔍 Checking container status..."
-            if docker ps | grep -q "homelab-discordbot-homelab"; then
+            if docker ps | grep -q "discordbot-homelab"; then
               echo "✅ Discord Bot deploy successful!"
               echo "📊 Container status:"
-              docker ps --filter "name=homelab-discordbot-homelab" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+              docker ps --filter "name=discordbot-homelab" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
               
               # Mostrar logs recentes para verificar se está funcionando
               echo "📋 Recent logs:"
-              docker logs homelab-discordbot-homelab --tail 10
+              docker logs discordbot-homelab --tail 10
             else
               echo "❌ Container failed to start"
               echo "🔍 Checking logs for errors:"
-              docker logs homelab-discordbot-homelab --tail 20
+              docker logs discordbot-homelab --tail 20
               exit 1
             fi
           EOF

@@ -87,7 +87,7 @@ def format_container_status(containers, filter_status=None):
     result = []
     
     if running:
-        result.append("🟢 **CONTAINERS RODANDO:**")
+        result.append("🟢 **CONTAINERS RODANDO:** 🟢 ")
         for container in running:
             result.append(f"  • `{container['name']}` - {container['image']}")
     
