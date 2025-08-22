@@ -1,0 +1,16 @@
+services:
+  discord-bot:
+    build: .
+    container_name: homelab-discord-bot
+    restart: unless-stopped
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    user: "1000:0"
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    driver: bridge
