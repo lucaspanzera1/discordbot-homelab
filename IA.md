@@ -18,7 +18,7 @@ pip install aiohttp
 GROQ_API_KEY=sua_key_groq_aqui
 ```
 
-###
+### Inteligência Artificial
 ```bash
 !ask <pergunta> - Faz pergunta para IA
 !explain <container> - Explica o que faz um container
