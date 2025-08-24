@@ -10,8 +10,8 @@ services:
     group_add:
       - "1001"
     networks:
-      - db
+      - homelab
 
 networks:
-  db:
+  homelab:
     driver: bridge
