@@ -6,14 +6,21 @@
 ![AI](https://img.shields.io/badge/AI-Groq%20LLaMA-orange?style=for-the-badge&logo=openai)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-Um bot Discord **inteligente** para monitorar e gerenciar containers Docker do seu homelab com **IA integrada** e **monitoramento avançado de recursos**!
+Um bot Discord **inteligente** para monitorar e gerenciar containers Docker do seu homelab com **IA integrada**, **monitoramento avançado de recursos** e **notificações automáticas de deploy**!
 
 ## ✨ Funcionalidades
+
+### 🚀 **NOVO: Monitoramento Automático de Deploy**
+- 📡 **Detecção automática** de novos containers, remoções e restarts
+- 🔔 **Notificações em tempo real** no Discord quando algo muda
+- 📊 **Histórico de mudanças** com timestamps precisos
+- 🎯 **Monitoramento contínuo** a cada 30 segundos
+- 🚨 **Alertas inteligentes** para mudanças de status
 
 ### 📈 **Monitoramento Clássico:**
 - 📊 **Status em tempo real** dos containers Docker
 - 🟢 **Containers rodando** e 🔴 **parados** organizados
-- 🔄 **Reiniciar containers** remotamente via Discord
+- 🔄 **Controle completo** - start, stop, restart remotamente
 - 🏓 **Health check** do bot, Docker e IA
 - 🎨 **Interface rica** com embeds coloridos
 - ⚡ **Respostas rápidas** e bem estruturadas
@@ -25,6 +32,7 @@ Um bot Discord **inteligente** para monitorar e gerenciar containers Docker do s
 - 🖥️ **Informações do sistema host** (CPU, RAM, disco, uptime)
 - 🔬 **Análise completa** do sistema com insights da IA
 - 💡 **Perguntas contextuais** - "Por que o Plex está lento?"
+- 🔍 **Explicações detalhadas** de containers específicos
 
 ## 🎮 Comandos Disponíveis
 
@@ -32,9 +40,14 @@ Um bot Discord **inteligente** para monitorar e gerenciar containers Docker do s
 | Comando | Descrição | Exemplo |
 |---------|-----------|---------|
 | `!status` | 📋 Status geral com recursos dos containers | `!status` |
-| `!up` | 🟢 Lista containers rodando | `!up` |
-| `!down` | 🔴 Lista containers parados | `!down` |
-| `!ping` | 🏓 Testa bot, Docker e IA | `!ping` |
+| `!ping` | 🏓 Testa bot, Docker, IA e monitoramento | `!ping` |
+
+### 🚀 **Monitoramento de Deploy (NOVO)**
+| Comando | Descrição | Exemplo |
+|---------|-----------|---------|
+| `!deploy_status` | 📡 Status do monitoramento automático | `!deploy_status` |
+| `!recent_changes [min]` | 🕒 Mudanças recentes nos containers | `!recent_changes 60` |
+| `!set_deploy_channel [id]` | 🔧 Configurar canal para notificações | `!set_deploy_channel` |
 
 ### 📈 **Monitoramento de Recursos**
 | Comando | Descrição | Exemplo |
@@ -46,10 +59,13 @@ Um bot Discord **inteligente** para monitorar e gerenciar containers Docker do s
 | `!system` | 🖥️ Informações do sistema host | `!system` |
 | `!host` | 🖥️ Alias para system | `!host` |
 
-### 🔧 **Controle**
+### 🔧 **Controle de Containers (NOVO)**
 | Comando | Descrição | Exemplo |
 |---------|-----------|---------|
-| `!restart <nome>` | 🔄 Reinicia container específico | `!restart portainer` |
+| `!start <nome>` | ▶️ Iniciar container específico | `!start nginx` |
+| `!stop <nome>` | ⏹️ Parar container específico | `!stop nginx` |
+| `!restart <nome>` | 🔄 Reiniciar container específico | `!restart portainer` |
+| `!cleanup` | 🧹 Remover containers parados (admin) | `!cleanup` |
 
 ### 🧠 **Inteligência Artificial**
 | Comando | Descrição | Exemplo |
@@ -108,7 +124,7 @@ pip install discord.py docker python-dotenv psutil aiohttp
 2. Clique em **"New Application"**
 3. Dê um nome ao seu bot (ex: "Homelab Monitor AI")
 4. Vá na aba **"Bot"** → **"Add Bot"**
-5. ✅ Habilite **"Message Content Intent"**
+5. ✅ **IMPORTANTE**: Habilite **"Message Content Intent"**
 6. 📋 Copie o **Token** (mantenha em segurança!)
 
 ### 2. Criar Conta Groq (IA)
@@ -129,7 +145,16 @@ pip install discord.py docker python-dotenv psutil aiohttp
      - `Use Slash Commands`
      - `Embed Links`
      - `Read Message History`
+     - `Add Reactions`
+     - `Attach Files`
 3. 🔗 Use o link gerado para adicionar o bot ao seu servidor
+
+### 4. Configurar Canal de Notificações (NOVO)
+
+1. **Crie um canal** no seu servidor (ex: `#homelab-deploys`)
+2. **Ative Modo Desenvolvedor**: Discord → Configurações → Avançado → Modo Desenvolvedor
+3. **Clique com botão direito** no canal → "Copiar ID do Canal"
+4. **Guarde o ID** para usar no arquivo `.env`
 
 ## ⚙️ Configuração do Ambiente
 
@@ -138,13 +163,16 @@ pip install discord.py docker python-dotenv psutil aiohttp
 nano .env
 ```
 
-### 2. Adicionar Tokens
+### 2. Adicionar Configurações
 ```env
 # Token do bot Discord (OBRIGATÓRIO)
 DISCORD_TOKEN=seu_token_discord_aqui
 
 # Token da API Groq para IA (OBRIGATÓRIO para IA)
 GROQ_API_KEY=sua_groq_api_key_aqui
+
+# ID do canal para notificações de deploy (NOVO - OPCIONAL)
+DEPLOY_CHANNEL_ID=123456789012345678
 ```
 
 ### 3. Configurar Permissões Docker
@@ -168,6 +196,17 @@ source venv/bin/activate
 
 # Executar bot
 python bot.py
+```
+
+Você deve ver algo como:
+```
+🔧 Inicializando cliente Docker...
+✅ Cliente Docker conectado com sucesso!
+✅ Cliente Groq inicializado!
+🤖 Bot conectado como SeuBot#1234
+✅ Conexão com Docker confirmada!
+📡 Monitoramento de containers iniciado!
+✅ Canal de deploy configurado: #homelab-deploys
 ```
 
 ### Método Docker (Produção) 🐳
@@ -213,6 +252,7 @@ services:
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - GROQ_API_KEY=${GROQ_API_KEY}
+      - DEPLOY_CHANNEL_ID=${DEPLOY_CHANNEL_ID}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /proc:/host/proc:ro
@@ -238,7 +278,88 @@ docker-compose logs -f discord-bot
 docker-compose down
 ```
 
+## 🔔 Notificações Automáticas de Deploy (NOVO)
+
+### Como Funciona:
+- 🕰️ **A cada 30 segundos** o bot verifica todos os containers
+- 🔍 **Compara** com o estado anterior
+- 🚨 **Detecta mudanças**: criação, remoção, restart, mudança de status
+- 📢 **Envia notificações** automaticamente no canal configurado
+
+### Exemplos de Notificações:
+
+#### 🚀 Novo Container
+```
+🚀 Novos Containers Implantados
+
+📦 nginx-proxy
+Imagem: nginx:latest
+Status: running
+Portas: 80:80, 443:443
+```
+
+#### 🔄 Container Reiniciado
+```
+🔄 Containers Reiniciados
+
+📦 portainer
+Imagem: portainer/portainer-ce:latest
+Status: running
+```
+
+#### ⚡ Mudança de Status
+```
+⚡ Mudanças de Status
+
+✅ grafana
+Status: exited → running
+Imagem: grafana/grafana:latest
+```
+
 ## 📱 Exemplos de Uso
+
+### 🚀 **Monitoramento de Deploy (NOVO)**
+```
+Usuário: !deploy_status
+Bot: 📡 Status do Monitoramento
+
+Monitoramento: ✅ Ativo
+Canal de Notificações: #homelab-deploys
+Containers Monitorados: 12
+Última Atualização: 14:32:15
+Docker: ✅ Conectado
+```
+
+```
+Usuário: !recent_changes 120
+Bot: 🕒 Mudanças dos Últimos 120 Minutos
+
+📦 nginx-test
+Status: running
+Imagem: nginx:latest
+Criado: 15 min atrás
+
+📦 redis-cache
+Status: running  
+Imagem: redis:7-alpine
+Criado: 45 min atrás
+```
+
+### 🔧 **Controle de Containers (NOVO)**
+```
+Usuário: !start nginx
+Bot: ▶️ Iniciando container nginx...
+     ✅ Container nginx iniciado com sucesso!
+
+Usuário: !stop nginx  
+Bot: ⏹️ Parando container nginx...
+     ✅ Container nginx parado com sucesso!
+
+Usuário: !cleanup
+Bot: ⚠️ Confirmação de Limpeza
+     Isso removerá TODOS os containers parados. Tem certeza?
+     [Reações: ✅ ❌]
+```
 
 ### 🔍 **Monitoramento de Recursos**
 ```
@@ -252,6 +373,8 @@ RAM %: 12.5%
 Limit RAM: 16384 MB
 Rede RX: 1024 MB
 Rede TX: 512 MB
+
+Atualizado em 14:25:30
 ```
 
 ### 🏆 **Top Consumidores**
@@ -270,7 +393,7 @@ Bot: 🏆 Top Consumidores de Recursos
 3. portainer - 128 MB
 ```
 
-### 🤖 **Assistente IA**
+### 🤖 **Assistente IA Melhorado**
 ```
 Usuário: !ask por que o container plex está usando tanta CPU?
 Bot: Com base nos dados atuais, o Plex está usando 45% de CPU, 
@@ -285,6 +408,21 @@ Bot: Com base nos dados atuais, o Plex está usando 45% de CPU,
      - Verificar atividade de transcodificação
      - Considerar hardware encoding
      - Monitorar usuários ativos
+
+Usuário: !explain nginx
+Bot: 🔍 Análise do Container: nginx
+
+O nginx é um servidor web de alta performance que atua como:
+
+🌐 **Servidor Web**: Serve conteúdo estático (HTML, CSS, JS)
+🔄 **Reverse Proxy**: Redireciona requisições para outros serviços
+⚖️ **Load Balancer**: Distribui carga entre múltiplos backends
+🔒 **SSL Termination**: Gerencia certificados HTTPS
+
+Status Atual:
+Status: running
+CPU: 12.8%
+RAM: 64 MB
 ```
 
 ### 🔬 **Análise Completa**
@@ -298,18 +436,21 @@ Sistema em bom estado geral. Observações:
 - 85% dos containers rodando normalmente
 - CPU do sistema em 23% (saudável)
 - RAM com 68% de uso (aceitável)
+- Monitoramento ativo há 2.5 horas
 
 🟡 Atenção:
 - Container "plex" usando 45% CPU
 - Disco com 78% de uso
+- 2 containers foram reiniciados na última hora
 
 💡 Recomendações:
 - Monitorar crescimento do disco
 - Considerar otimizar transcodificação do Plex
 - Backup preventivo recomendado
+- Investigar cause dos restarts recentes
 
 Resumo Rápido:
-🏃 7 rodando | ⏹️ 1 parados
+🏃 7 rodando | ℹ️ 1 parados
 🔥 CPU total: 89.4% | 🧠 RAM total: 4096 MB
 ```
 
@@ -326,7 +467,7 @@ RAM Livre: 4.8 GB
 Disco Livre: 69.5 GB
 ```
 
-### 📊 **Status Atualizado**
+### 📊 **Status Completo**
 ```
 Usuário: !status
 Bot: 📊 Status dos Containers
@@ -338,12 +479,14 @@ Containers Rodando:
    CPU: 12.8% | RAM: 64MB (0.4%)
 🟢 grafana
    CPU: 8.1% | RAM: 512MB (3.1%)
+🟢 portainer
+   CPU: 2.3% | RAM: 128MB (0.8%)
 
 Containers Parados:
 🔴 old-backup - exited
 
 Resumo:
-✅ 6 rodando | ⏹️ 1 parados | 📦 7 total
+✅ 6 rodando | ℹ️ 1 parados | 📦 7 total
 ```
 
 ## 🔍 Funcionalidades da IA
@@ -352,6 +495,7 @@ Resumo:
 - Quando você pergunta sobre containers, a IA tem acesso aos dados reais de CPU, RAM, rede
 - Respostas baseadas no estado atual do seu sistema
 - Sugestões personalizadas baseadas nos seus containers
+- **NOVO**: Contexto sobre mudanças recentes de deploy
 
 ### 💡 **Exemplos de Perguntas**
 ```
@@ -360,8 +504,10 @@ Resumo:
 !ask qual container devo reiniciar primeiro?
 !ask meu sistema está com boa performance?
 !ask preciso de mais RAM no servidor?
+!ask por que tantos containers foram reiniciados hoje?
 !explain portainer
 !ask como fazer backup do grafana?
+!ask o que significa quando um container fica "exited"?
 ```
 
 ### 🎯 **Análises Inteligentes**
@@ -370,8 +516,35 @@ Resumo:
 - Recomendações de otimização
 - Alertas preventivos
 - Sugestões de manutenção
+- **NOVO**: Análise de padrões de deploy
+- **NOVO**: Detecção de problemas recorrentes
 
-## 📊 Monitoramento
+## 🏓 Teste Rápido
+
+Após configurar tudo, teste com:
+
+```bash
+# Teste básico
+!ping                    # Deve mostrar todos os status ✅
+
+# Teste monitoramento
+!status                  # Lista containers atuais
+!deploy_status          # Status do monitoramento automático
+
+# Teste deploy (crie um container teste)
+docker run --name teste-deploy -d nginx
+# O bot deve notificar automaticamente no canal!
+
+# Teste IA
+!ask como está meu sistema?
+!explain teste-deploy
+
+# Limpeza
+!stop teste-deploy
+docker rm teste-deploy
+```
+
+## 📊 Monitoramento e Logs
 
 ### Logs do Bot
 ```bash
@@ -384,7 +557,7 @@ python bot.py  # logs aparecem no terminal
 
 ### Verificar Recursos
 ```bash
-# Uso de recursos do container
+# Uso de recursos do container do bot
 docker stats discordbot-homelab-ai
 
 # Todos os containers
@@ -394,8 +567,60 @@ docker ps -a
 htop
 ```
 
-### 🔗 **Links Úteis**
+### Status do Bot
+```bash
+# No Discord
+!ping                    # Status geral
+!deploy_status          # Status do monitoramento
+!system                 # Status do host
+```
+
+## 🔧 Solução de Problemas
+
+### ❌ "Message Content Intent não ativado"
+- Vá no Discord Developer Portal
+- Aba "Bot" → Privileged Gateway Intents
+- ✅ Ative "Message Content Intent"
+
+### ❌ "Canal de deploy não encontrado"
+- Verifique se o DEPLOY_CHANNEL_ID está correto
+- Use `!set_deploy_channel` no canal desejado
+- Certifique-se que o bot tem permissões no canal
+
+### ❌ "Monitoramento inativo"
+- Verifique logs do bot
+- Certifique-se que Docker está acessível
+- Reinicie o bot: `!restart` (se aplicável)
+
+### ❌ Bot não detecta mudanças
+- Verifique se o bot tem acesso ao Docker socket
+- Confirme que o monitoramento está ativo: `!deploy_status`
+- Teste com: `docker run --name teste -d nginx`
+
+### 🆘 **Comandos de Emergência**
+```bash
+# Reiniciar monitoramento
+!deploy_status           # Verificar status
+# Se inativo, reinicie o bot
+
+# Ver mudanças recentes
+!recent_changes 1440     # Últimas 24 horas
+
+# Status completo
+!ping                    # Ver todos os componentes
+```
+
+## 🔗 Links Úteis
+
 - [Discord Developer Portal](https://discord.com/developers/applications)
 - [Groq API Console](https://console.groq.com)
 - [Docker Documentation](https://docs.docker.com/)
 - [Python Virtual Environments](https://docs.python.org/3/tutorial/venv.html)
+
+## 🤝 Contribuindo
+
+1. Faça um Fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
